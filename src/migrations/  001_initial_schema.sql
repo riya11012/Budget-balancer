@@ -128,3 +128,19 @@ CREATE TABLE affordability_rules (
 
     updated_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE TABLE wishlist_items (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    product_name TEXT NOT NULL,
+    product_url TEXT,
+    category TEXT NOT NULL,
+    target_price NUMERIC(12,2) NOT NULL,
+    priority TEXT DEFAULT 'medium',
+    status TEXT DEFAULT 'waiting',
+    stock_status TEXT DEFAULT 'unknown',
+    stock_risk TEXT DEFAULT 'unknown',
+    last_checked_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);

@@ -14,12 +14,12 @@ type CategoryData = {
 };
 
 const COLORS = [
-  "#0f172a",
-  "#2563eb",
-  "#16a34a",
-  "#f59e0b",
-  "#dc2626",
-  "#7c3aed",
+  "#010028", // Deep Blue
+  "#03C04A", // Emerald Green
+  "#990F02", // Amber Brown
+  "#991B1B", // Dark Red
+  "#5B21B6", // Deep Purple
+  "#831843", // Dark Pink
 ];
 
 export function CategoryPieChart({
@@ -29,15 +29,15 @@ export function CategoryPieChart({
 }) {
   if (!data.length) {
     return (
-      <div className="flex h-72 items-center justify-center text-slate-500">
+      <div className="flex h-72 items-center justify-center rounded-2xl border bg-white text-slate-500 shadow-sm dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
         No spending data yet
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl border bg-white p-6 shadow-sm">
-      <h2 className="text-xl font-semibold">
+    <div className="rounded-2xl border bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+      <h2 className="text-xl font-semibold text-black dark:text-white">
         Spending by Category
       </h2>
 
@@ -59,7 +59,14 @@ export function CategoryPieChart({
               ))}
             </Pie>
 
-            <Tooltip />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#18181b",
+                border: "1px solid #3f3f46",
+                borderRadius: "12px",
+                color: "#fff",
+              }}
+            />
           </PieChart>
         </ResponsiveContainer>
       </div>

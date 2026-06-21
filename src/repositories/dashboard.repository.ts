@@ -1,5 +1,63 @@
 import { pool } from "../db";
+export async function getJobLossSurvivalData(
+  userId: string
+) {
+  const profileResult = await pool.query(
+    `
+    SELECT
+      current_savings,
+      emergency_fund
+    FROM financial_profiles
+    WHERE user_id = $1
+    `,
+    [userId]
+  );
 
+  const expenseResult = await pool.query(
+    `
+    SELECT
+      COALESCE(AVG(month_total), 0) AS average_expenses
+    FROM (
+      SELECT
+        DATE_TRUNC('month', transaction_date) AS month,
+        SUM(amount) AS month_total
+      FROM transactions
+      WHERE user_id = $1
+        AND type = 'expense'
+        AND transaction_date >= CURRENT_DATE - INTERVAL '3 months'
+      GROUP BY DATE_TRUNC('month', transaction_date)
+    ) monthly_expenses
+    `,
+    [userId]
+  );
+  
+  const monthlyExpenses = Number(
+    expenseResult.rows[0].average_expenses
+  );
+
+  const profile = profileResult.rows[0];
+
+  if (!profile) {
+    return null;
+  }
+
+  const totalFunds =
+    Number(profile.current_savings) +
+    Number(profile.emergency_fund);
+
+   
+
+  const survivalMonths =
+    monthlyExpenses > 0
+      ? Math.floor(totalFunds / monthlyExpenses)
+      : 0;
+
+  return {
+    totalFunds,
+    monthlyExpenses,
+    survivalMonths,
+  };
+}
 export async function getDashboardSummary(
   userId: string
 ) {
